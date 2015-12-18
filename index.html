@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Lokio's Ace Thing</title>
+<style type="text/css" media="screen">
+    #editor {
+        height:400px;
+        border: 1px solid #DDD;
+        border-right:none;
+        border-radius:0px;
+        display:inline-block;
+    }
+    .row {
+        display:flex;
+    }
+    .col {
+        flex:none;
+        width:400px;
+        display:inline-block;
+    }
+    .elastic {
+        flex:auto;
+        width:100%;
+    }
+    #canvas {
+        border:1px solid black;
+        height:400px;
+        border: 1px solid #DDD;
+        outline: none;
+    }
+    #canvas:focus {
+        outline: none;
+    }
+    #canvas-errors {
+        float:right;
+        width:400px;
+
+    }
+</style>
+<script src="/jslibs/processing.min.js"></script>
+</head>
+<body>
+<div class="row">
+    <div id="editor" class="col elastic">
+    </div>
+    <canvas id="canvas" class="col" width="400" height="400">
+    </canvas>
+    
+</div>
+<div id="canvas-errors">
+dgd
+</div>
+<script src="/ace-prebuilt/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.$blockScrolling = Infinity
+    editor.setValue((localStorage.code)?localStorage.code:"/*\n\tLokio is the best!\n*/",-1);
+    editor.getSession().setMode("ace/mode/java");
+    editor.getSession().setUseWrapMode(true);
+    editor.setShowPrintMargin(false);
+    editor.getSession().setTabSize(4);
+    var CV = document.getElementById("canvas");
+    var canvas;
+    reloadCanvas();
+    function reloadCanvas() {
+        localStorage.code = editor.getValue();
+        if(canvas){
+            canvas.exit();
+        }
+        try{
+            canvas = new Processing(CV,Processing.compile(editor.getValue()));
+        }catch(e){
+            throwError(e);
+        }
+    }
+    function throwError(error){
+        document.getElementById("canvas-errors").textContent = error;
+    }
+    editor.on("change",function(){
+        reloadCanvas();
+    });
+</script>
+</body>
+</html>
