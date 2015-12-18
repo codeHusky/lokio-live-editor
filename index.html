@@ -69,6 +69,7 @@ dgd
         }
         try{
             canvas = new Processing(CV,Processing.compile(editor.getValue()));
+            throwError("");
         }catch(e){
             throwError(e);
         }
